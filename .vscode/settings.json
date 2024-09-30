@@ -1,0 +1,19 @@
+{
+    "python.languageServer": "Pylance",
+    "files.associations": {
+        "**/*.html": "html",
+        "**/templates/**/*.html": "django-html",
+        "**/templates/**/*": "django-txt",
+        "**/requirements{/**,*}.{txt,in}": "pip-requirements"
+    },
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    },
+    "files.exclude": {
+        "env/": true,
+        "db.sqlite3": true,
+        ".gitignore": true,
+        "**/__pycache__/": true,
+        "**/migrations/": true,
+    }
+}

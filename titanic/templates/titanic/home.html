@@ -1,0 +1,81 @@
+{% extends "titanic/base.html" %}
+{% load static %}
+
+{% block title %}
+    Titanic Home
+{% endblock  %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static "titanic/home.css" %}">
+{% endblock  %}
+
+{% block content %}
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <p class="{{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <!-- Header 1: File Upload for Excel -->
+    <header>
+        <h1>Upload Titanic Dataset</h1>
+        <form id="uploadForm" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="form-type" value="upload">
+            <label for="fileInput">Upload Excel File:</label>
+            <input type="file" id="fileInput" name="file" accept=".xlsx, .xls">
+            <button type="submit">Upload</button>
+        </form>
+    </header>
+
+    <!-- Header 2: Dataset CRUD Form -->
+    <header>
+        <h1>Create, Update, and Delete Operations</h1>
+        <form id="crudForm" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="form-type" value="crud">
+            {% for form_field in form %}
+                <div class="form-control {% if form_field.errors %}invalid{% endif %}">
+                    {{ form_field.label_tag }}
+                    {{ form_field }}
+                    {{ form_field.errors }}
+                </div>
+            {% endfor %}
+            <button type="submit" name="submit-type" value="create-update">Create / Update</button>
+            <button type="submit" id="deleteButton" name="submit-type" value="delete">Delete</button>
+        </form>
+    </header>
+
+    <!-- Header 3: Data Grid Display -->
+    <header>
+        <h1>Titanic Data</h1>
+        <table id="dataGrid">
+            <thead>
+                <tr>
+                    {% for form_field in form %}
+                        <th>{{ form_field.label_tag|cut:":"|title|linebreaks  }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for passenger in passengers %}
+                    <tr>
+                        <td>{{ passenger.passenger_id }}</td>
+                        <td>{{ passenger.get_survived_display }}</td>
+                        <td>{{ passenger.get_pclass_display }}</td>
+                        <td>{{ passenger.name }}</td>
+                        <td>{{ passenger.get_sex_display }}</td>
+                        <td>{% if passenger.age is not None %}{{ passenger.age|floatformat:0 }}{% endif %}</td>
+                        <td>{% if passenger.sibsp is not None %}{{ passenger.sibsp }}{% endif %}</td>
+                        <td>{% if passenger.parch is not None %}{{ passenger.parch }}{% endif %}</td>
+                        <td>{{ passenger.ticket }}</td>
+                        <td>{% if passenger.fare is not None %}{{ passenger.fare }}{% endif %}</td>
+                        <td>{% if passenger.cabin is not None %}{{ passenger.cabin }}{% endif %}</td>
+                        <td>{% if passenger.embarked is not None %}{{ passenger.get_embarked_display }}{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </header>
+{% endblock  %}
